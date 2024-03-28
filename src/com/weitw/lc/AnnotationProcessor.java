@@ -15,16 +15,19 @@ import java.util.*;
 
 public class AnnotationProcessor {
 
+    private static final String readmeTitle = "My-Daily-LeetCoding";
+
+    private static final String readmeDesc = "LeetCode做题记录，持续锻炼思维能力";
+
     public static void main(String[] args) {
         String packageName = "com.weitw.lc.records"; // 替换为实际的包名
-        String outputFilePath = "output.md"; // Markdown文件输出路径
+        String outputFilePath = "README.md"; // Markdown文件输出路径
         processAnnotations(packageName, outputFilePath);
     }
 
     public static void processAnnotations(String packageName, String outputFilePath) {
         Reflections reflections = new Reflections(packageName);
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(LCName.class); // 获取带有LCName注解的所有类
-
         Map<String, List<ClazzInfo>> map = new LinkedHashMap<>();
 
         for (Class<?> clazz : classes) {
@@ -47,6 +50,8 @@ public class AnnotationProcessor {
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
+            // 编写标题
+            writeReadmeTitleDes(writer);
             map.forEach((date, v) -> {
                 write(writer, "# " + date + "\n\n");
                 int i = 1;
@@ -56,7 +61,7 @@ public class AnnotationProcessor {
                     List<MethodInfo> methodList = clazzInfo.getMethodList();
                     int j = 1;
                     for (MethodInfo methodInfo : methodList) {
-                        write(writer, "### " + (i) + "." + j++ + " " + methodInfo.getName() + "\n");
+                        write(writer, "### " + (i) + "." + j++ + " " + methodInfo.getName() + "(" + methodInfo.getDate() + ")\n");
                         write(writer, methodInfo.getRemark() + "\n");
                         write(writer, "\n");
                     }
@@ -66,6 +71,19 @@ public class AnnotationProcessor {
             });
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 编写readme.md的标题和简介
+     * @param writer
+     */
+    public static void writeReadmeTitleDes(BufferedWriter writer) {
+        try {
+            writer.write("# " + readmeTitle + "\n");
+            writer.write(readmeDesc + "\n\n");
+        } catch (IOException e) {
+            System.out.println("写异常，" + e.getMessage());
         }
     }
 

@@ -32,7 +32,7 @@ import com.weitw.lc.annotation.LCName;
 @LCName(index = 161, name = "连续销售最高总额", date = "2024-03-26")
 public class L161 {
 
-    @LCSolution(index = 161, name = "最佳方案", date = "2024-03-26")
+    @LCSolution(index = 1, name = "最佳方案", date = "2024-03-26")
     public static int maxSales(int[] sales) {
         if (sales.length == 1) {
             return sales[0];
