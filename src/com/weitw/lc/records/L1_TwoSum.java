@@ -1,5 +1,6 @@
 package com.weitw.lc.records;
 
+import com.weitw.lc.annotation.Difficulty;
 import com.weitw.lc.annotation.LCSolution;
 import com.weitw.lc.annotation.LCName;
 import com.weitw.lc.annotation.Success;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 
 @Success
-@LCName(index = 1, name = "两数之和", date = "2024-03-26")
+@LCName(index = 1, name = "两数之和", date = "2024-03-26", difficulty = Difficulty.Easy)
 public class L1_TwoSum {
     /*
     测试用例：

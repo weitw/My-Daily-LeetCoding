@@ -1,5 +1,6 @@
 package com.weitw.lc;
 
+import com.weitw.lc.annotation.Difficulty;
 import com.weitw.lc.annotation.LCSolution;
 import com.weitw.lc.annotation.LCName;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
+
+/**
+ * 运行该程序，可以将records包下的所有刷题记录的处理情况整理编写到README文档中，以时间倒序展示
+ * @author weitw
+ * @date 2024/3/29 11:39
+ */
 
 public class AnnotationProcessor {
 
@@ -35,16 +42,15 @@ public class AnnotationProcessor {
             if (lcName != null) {
                 String clazzDate = lcName.date();
                 Method[] methods = clazz.getDeclaredMethods();
-                List<MethodInfo> methodInfoList = new ArrayList<>();
+                List<LCSolution> methodInfoList = new ArrayList<>();
                 for (Method method : methods) {
                     LCSolution lcMethod = method.getAnnotation(LCSolution.class);
                     if (lcMethod != null) {
-                        MethodInfo methodInfo = new MethodInfo(lcMethod.date(), lcMethod.name(), lcMethod.index(), lcMethod.remark());
-                        methodInfoList.add(methodInfo);
+                        methodInfoList.add(lcMethod);
                     }
                 }
-                methodInfoList.sort(Comparator.comparing(MethodInfo::getDate));
-                ClazzInfo clazzInfo = new ClazzInfo(lcName.date(), lcName.name(), lcName.index(), methodInfoList);
+                methodInfoList.sort(Comparator.comparing(LCSolution::index));
+                ClazzInfo clazzInfo = new ClazzInfo(lcName.date(), lcName.name(), lcName.index(), lcName.difficulty(), methodInfoList);
                 map.computeIfAbsent(clazzDate, k -> new ArrayList<>()).add(clazzInfo);
             }
         }
@@ -56,13 +62,14 @@ public class AnnotationProcessor {
                 write(writer, "# " + date + "\n\n");
                 int i = 1;
                 for (ClazzInfo clazzInfo : v) {
-                    write(writer, "## " + (i) + "." + clazzInfo.getName() + "\n");
+                    write(writer, "## " + (i) + "." + clazzInfo.getName() + "(" + clazzInfo.getDifficulty().getVal() + ")\n");
                     write(writer, "\n");
-                    List<MethodInfo> methodList = clazzInfo.getMethodList();
+                    List<LCSolution> methodList = clazzInfo.getMethodList();
                     int j = 1;
-                    for (MethodInfo methodInfo : methodList) {
-                        write(writer, "### " + (i) + "." + j++ + " " + methodInfo.getName() + "(" + methodInfo.getDate() + ")\n");
-                        write(writer, methodInfo.getRemark() + "\n");
+                    for (LCSolution methodInfo : methodList) {
+                        write(writer, "### " + (i) + "." + j++ + " " + methodInfo.name() + "(" + methodInfo.date() + ")\n");
+                        write(writer, "用时超过" + methodInfo.time() + "，消耗内存超过" + methodInfo.memory() + "\n\n");
+                        write(writer, methodInfo.remark() + "\n");
                         write(writer, "\n");
                     }
                     i++;
@@ -102,17 +109,7 @@ public class AnnotationProcessor {
         private String date;
         private String name; // 解法的名称
         private int index; // 解法的索引，可以根据需要展示或使用
-        private List<MethodInfo> methodList;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    // 一个简单的内部类来保存方法注解信息
-    static class MethodInfo {
-        private String date;
-        private String name; // 解法的名称
-        private int index; // 解法的索引，可以根据需要展示或使用
-        private String remark; // 解决方案具体描述
+        private Difficulty difficulty; // 难度
+        private List<LCSolution> methodList;
     }
 }

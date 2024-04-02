@@ -10,7 +10,8 @@ import java.util.Date;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE) // 假设这个注解是用在类上的
 public @interface LCName {
-    int index();
+    int index() default 0;  // 题目序号
     String name() default "";
     String date();
+    Difficulty difficulty() default Difficulty.Easy;
 }

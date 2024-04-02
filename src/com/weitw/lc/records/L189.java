@@ -1,5 +1,9 @@
 package com.weitw.lc.records;
 
+import com.weitw.lc.annotation.Difficulty;
+import com.weitw.lc.annotation.LCName;
+import com.weitw.lc.annotation.LCSolution;
+
 import java.util.Arrays;
 
 /**
@@ -31,7 +35,11 @@ import java.util.Arrays;
  * 0 <= k <= 105
  */
 
+@LCName(index = 189, name = "轮转数组", date = "2024-03-29", difficulty = Difficulty.Medium)
 public class L189 {
+
+    @LCSolution(index = 1, name = "取余，借助新数组", remark = "取余后确认最小移动的位数，然后循环将每个数+k后确认它新的位置，放到新的数组中",
+            date = "2024-03-29", time = "61.76%", memory = "83.97%")
     public static void rotate(int[] nums, int k) {
         int len = nums.length;
         if (len == 1 || k % len == 0) {
@@ -48,6 +56,9 @@ public class L189 {
         System.arraycopy(ks, 0, nums, 0, nums.length);
     }
 
+    @LCSolution(index = 2, name = "取余，借助System.arraycopy方法，减少代码量", remark = "本质上思路还是跟第一个差不多，区别在于是将移动会后超过数组最右边的数据放到新数组中，" +
+            "然后再将不会超过最右边的数据移动到新数组的最后",
+            date = "2024-03-29", time = "100%", memory = "67.83%")
     public static void rotate1(int[] nums, int k) {
         int len = nums.length;
         if (len == 1 || k % len == 0) {
